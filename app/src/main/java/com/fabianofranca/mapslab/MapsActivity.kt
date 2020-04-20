@@ -2,6 +2,7 @@ package com.fabianofranca.mapslab
 
 import android.Manifest
 import android.content.Context
+import android.content.IntentSender.SendIntentException
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.LocationManager
@@ -10,14 +11,20 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.fabianofranca.mapslab.databinding.ActivityMapsBinding
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.*
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.tasks.Task
 import permissions.dispatcher.*
+import java.lang.Exception
 import java.util.*
+
 
 @RuntimePermissions
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -42,10 +49,36 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivityMapsBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-
+        checkGpsEnabled()
         setupAdapter()
         setupViews()
         getMap()
+    }
+
+    private fun checkGpsEnabled() {
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(LocationRequest.create()).apply {
+                setAlwaysShow(true)
+            }
+
+        val result: Task<LocationSettingsResponse> =
+            LocationServices.getSettingsClient(this).checkLocationSettings(builder.build())
+        result.addOnCompleteListener {
+            try {
+                it.getResult(ApiException::class.java)
+            } catch (apiException: ApiException) {
+                when (apiException.statusCode) {
+                    LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
+                        val resolvable = apiException as ResolvableApiException
+                        try {
+                            resolvable.startResolutionForResult(this, 1000)
+                        } catch (exception: Exception) {
+
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setupAdapter() {
