@@ -102,6 +102,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 coordinates?.let { gotoCoordinates(it) }
             }
         }
+
+        binding.bottomSheetButton.setOnClickListener {
+            MyBottomSheet.newInstance().show(supportFragmentManager, "TAG")
+        }
     }
 
     private fun getMap() {

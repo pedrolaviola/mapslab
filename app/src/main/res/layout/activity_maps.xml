@@ -55,6 +55,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_place" />
 
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/bottomSheetButton"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
+        android:theme="@style/WhiteFloatingActionButton"
+        app:fabSize="mini"
+        app:layout_anchor="@id/addressCard"
+        app:layout_constraintBottom_toTopOf="@+id/addressCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_my_location_disabled" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/myLocationButton"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
